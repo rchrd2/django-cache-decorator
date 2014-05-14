@@ -22,16 +22,35 @@ def cache_get_key(*args, **kwargs):
     key = hashlib.md5("".join(serialise)).hexdigest()
     return key
 
+# New cache instance reconnect-apparently
+cache_factory = {}
 
-def django_cache_decorator(time=300, cache_type=None):
+def get_cache_factory(cache_type):
+    """
+    Helper to only return a single instance of a cache
+    """
+    if cache_type is None:
+        cache_type = 'default'
+    
+    if not cache_type in cache_factory:
+        cache_factory[cache_type] = get_cache(cache_type)
+
+    return cache_factory[cache_type]
+
+
+def django_cache_decorator(time=300, key=None, cache_type=None):
+    """
+    Easily add caching to a function in django
+    """
     if cache_type is None:
         cache_type = 'memcache' 
     
-    cache = get_cache(cache_type)
-    
+    cache = get_cache_factory(cache_type)
+
     def decorator(fn):
         def wrapper(*args, **kwargs):
-            key = cache_get_key(fn.__name__, *args, **kwargs)
+            if key is None:
+                key = cache_get_key(fn.__name__, *args, **kwargs)
             result = cache.get(key)
             if not result:
                 result = fn(*args, **kwargs)
