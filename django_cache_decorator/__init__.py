@@ -12,6 +12,11 @@
 from django.core.cache import get_cache
 import hashlib
 
+# load logging
+#import logging
+#logger = logging.getLogger(__name__)
+
+
 def cache_get_key(*args, **kwargs):
     serialise = []
     for arg in args:
@@ -38,7 +43,7 @@ def get_cache_factory(cache_type):
     return cache_factory[cache_type]
 
 
-def django_cache_decorator(time=300, key=None, cache_type=None):
+def django_cache_decorator(time=300, cache_key='', cache_type=None):
     """
     Easily add caching to a function in django
     """
@@ -46,16 +51,29 @@ def django_cache_decorator(time=300, key=None, cache_type=None):
         cache_type = 'memcache' 
     
     cache = get_cache_factory(cache_type)
+    if not cache_key:
+        cache_key = None
 
     def decorator(fn):
         def wrapper(*args, **kwargs):
-            if key is None:
-                key = cache_get_key(fn.__name__, *args, **kwargs)
-            result = cache.get(key)
+            #logger.debug([args, kwargs])
+            
+            # Inner scope variables are read-only so we set a new var
+            _cache_key = cache_key
+                    
+            if not _cache_key:
+                _cache_key = cache_get_key(fn.__name__, *args, **kwargs)
+
+            #logger.debug(['_cach_key.......',_cache_key])
+
+            result = cache.get(_cache_key)
+
             if not result:
                 result = fn(*args, **kwargs)
-                cache.set(key, result, time)
+                cache.set(_cache_key, result, time)
+            
             return result
         return wrapper
+    
     return decorator
 
