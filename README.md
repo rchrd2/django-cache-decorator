@@ -19,3 +19,7 @@ Built off of code form:
 <http://james.lin.net.nz/2011/09/08/python-decorator-caching-your-functions/>
 
 
+Release log -
+
+- 0.2 - bug fix for unicode params
+- 0.1 - initial release
