@@ -21,5 +21,6 @@ Built off of code form:
 
 Release log -
 
+- 0.3 - another bug fix for unicode params
 - 0.2 - bug fix for unicode params
 - 0.1 - initial release

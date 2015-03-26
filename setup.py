@@ -4,7 +4,7 @@ setup(
     name = 'django-cache-decorator',
     packages = ['django_cache_decorator'],
     license = 'MIT',
-    version = '0.2',
+    version = '0.3',
     description = 'Easily add caching to functions within a django project.',
     long_description=open('README.md').read(),
     author = 'Richard Caceres',
