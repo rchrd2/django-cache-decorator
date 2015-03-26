@@ -15,23 +15,14 @@ from __future__ import unicode_literals
 # http://james.lin.net.nz/2011/09/08/python-decorator-caching-your-functions/
 
 
-from django.core.cache import get_cache
-import hashlib
 
 # load logging
 #import logging
 #logger = logging.getLogger(__name__)
 
+from django_cache_decorator.utils import cache_get_key
 
-def cache_get_key(*args, **kwargs):
-    serialise = []
-    for arg in args:
-        serialise.append(unicode(arg))
-    for key,arg in kwargs.items():
-        serialise.append(unicode(key))
-        serialise.append(unicode(arg))
-    key = hashlib.md5("".join(serialise)).hexdigest()
-    return key
+
 
 # New cache instance reconnect-apparently
 cache_factory = {}
@@ -40,6 +31,8 @@ def get_cache_factory(cache_type):
     """
     Helper to only return a single instance of a cache
     """
+    from django.core.cache import get_cache
+    
     if cache_type is None:
         cache_type = 'default'
     
@@ -53,6 +46,7 @@ def django_cache_decorator(time=300, cache_key='', cache_type=None):
     """
     Easily add caching to a function in django
     """
+    
     if cache_type is None:
         cache_type = 'memcache' 
     
