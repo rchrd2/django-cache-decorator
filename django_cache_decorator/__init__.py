@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*- 
 from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 from __future__ import unicode_literals
 
 # This can be used to cache the results of functions.
@@ -23,13 +21,13 @@ from __future__ import unicode_literals
 from django_cache_decorator.utils import cache_get_key
 
 
-
 # New cache instance reconnect-apparently
 cache_factory = {}
 
 def get_cache_factory(cache_type):
     """
     Helper to only return a single instance of a cache
+    As of django 1.7, may not be needed.
     """
     from django.core.cache import get_cache
     
